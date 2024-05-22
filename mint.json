@@ -170,19 +170,6 @@
         "requests/generate-a-postman-collection-for-a-particular-request"
       ]
     },
-    // {
-    //   "group": "Schemas",
-    //   "pages": [
-    //     "api-reference/schemas/get-information-about-all-schemas-associated-with-a-particular-apiid",
-    //     "api-reference/schemas/get-information-about-the-latest-schema",
-    //     "api-reference/schemas/get-information-about-a-particular-schema-revision-for-an-api",
-    //     "api-reference/schemas/get-a-diff-of-two-schema-revisions-for-an-api",
-    //     "api-reference/schemas/download-the-latest-schema-for-a-particular-apiid",
-    //     "api-reference/schemas/download-a-particular-schema-revision-for-an-api",
-    //     "api-reference/schemas/register-a-schema",
-    //     "api-reference/schemas/delete-a-particular-schema-revision-for-an-api"
-    //   ]
-    // },
 
     {
       "group": "Endpoint Examples",
