@@ -1,4 +1,4 @@
-name: Generate
+name: Merge code samples into spec
 permissions:
     checks: write
     contents: write
