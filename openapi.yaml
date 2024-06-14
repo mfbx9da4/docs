@@ -34,6 +34,8 @@ tags:
       name: Events
     - description: REST APIs for managing reports
       name: Reports
+    - description: REST APIs for managing LLM OAS suggestions
+      name: Suggest
 externalDocs:
     url: /docs
     description: The Speakeasy Platform Documentation
@@ -93,7 +95,7 @@ paths:
                 - lang: typescript
                   label: getApis
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -102,16 +104,19 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.getApis({});
+                      const result = await sdk.apis.getApis({
+                        and: false,
+                      }, {
+                        "key": [
+                          "<value>",
+                        ],
+                      });
 
                       // Handle the result
                       console.log(result)
                     }
 
                     run();
-                - lang: go
-                  label: getApis
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/operations\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n    request := operations.GetApisRequest{}\n    \n    ctx := context.Background()\n    res, err := s.GetApis(ctx, request)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.Apis != nil {\n        // handle response\n    }\n}"
     /v1/apis/{apiID}:
         get:
             summary: Get all Api versions for a particular ApiEndpoint.
@@ -170,7 +175,7 @@ paths:
                 - lang: typescript
                   label: getAllApiVersions
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -179,8 +184,12 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.getAllApiVersions({
-                        apiID: "<value>",
+                      const result = await sdk.apis.getAllApiVersions("<value>", {
+                        and: false,
+                      }, {
+                        "key": [
+                          "<value>",
+                        ],
                       });
 
                       // Handle the result
@@ -188,9 +197,6 @@ paths:
                     }
 
                     run();
-                - lang: go
-                  label: getAllApiVersions
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/operations\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n    request := operations.GetAllAPIVersionsRequest{\n        APIID: \"<value>\",\n    }\n    \n    ctx := context.Background()\n    res, err := s.GetAllAPIVersions(ctx, request)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.Apis != nil {\n        // handle response\n    }\n}"
         put:
             summary: Upsert an Api
             description: |-
@@ -226,7 +232,7 @@ paths:
                 - lang: typescript
                   label: upsertApi
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -235,13 +241,10 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.upsertApi({
-                        apiID: "<value>",
-                        api: {
-                          apiId: "<value>",
-                          description: "Synchronised 5th generation knowledge user",
-                          versionId: "<value>",
-                        },
+                      const result = await sdk.apis.upsertApi("<value>", {
+                        apiId: "<value>",
+                        description: "Synchronised 5th generation knowledge user",
+                        versionId: "<value>",
                       });
 
                       // Handle the result
@@ -249,9 +252,6 @@ paths:
                     }
 
                     run();
-                - lang: go
-                  label: upsertApi
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/operations\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n    request := operations.UpsertAPIRequest{\n        APIID: \"<value>\",\n        API: shared.APIInput{\n            APIID: \"<value>\",\n            Description: \"Synchronised 5th generation knowledge user\",\n            VersionID: \"<value>\",\n        },\n    }\n    \n    ctx := context.Background()\n    res, err := s.UpsertAPI(ctx, request)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.API != nil {\n        // handle response\n    }\n}"
     /v1/apis/{apiID}/api_endpoints:
         get:
             summary: Get all Api endpoints for a particular apiID.
@@ -281,7 +281,7 @@ paths:
                 - lang: typescript
                   label: getAllApiEndpoints
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -290,16 +290,13 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.getAllApiEndpoints("<value>");
+                      const result = await sdk.apiEndpoints.getAllApiEndpoints("<value>");
 
                       // Handle the result
                       console.log(result)
                     }
 
                     run();
-                - lang: go
-                  label: getAllApiEndpoints
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/operations\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n    request := operations.GetAllAPIEndpointsRequest{\n        APIID: \"<value>\",\n    }\n    \n    ctx := context.Background()\n    res, err := s.GetAllAPIEndpoints(ctx, request)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.APIEndpoints != nil {\n        // handle response\n    }\n}"
     /v1/apis/{apiID}/version/{versionID}:
         delete:
             summary: Delete an Api.
@@ -330,7 +327,7 @@ paths:
                 - lang: typescript
                   label: deleteApi
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -339,19 +336,13 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.deleteApi({
-                        apiID: "<value>",
-                        versionID: "<value>",
-                      });
+                      const result = await sdk.apis.deleteApi("<value>", "<value>");
 
                       // Handle the result
                       console.log(result)
                     }
 
                     run();
-                - lang: go
-                  label: deleteApi
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/operations\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n    request := operations.DeleteAPIRequest{\n        APIID: \"<value>\",\n        VersionID: \"<value>\",\n    }\n    \n    ctx := context.Background()\n    res, err := s.DeleteAPI(ctx, request)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
     /v1/apis/{apiID}/version/{versionID}/api_endpoints:
         get:
             summary: Get all ApiEndpoints for a particular apiID and versionID.
@@ -387,7 +378,7 @@ paths:
                 - lang: typescript
                   label: getAllForVersionApiEndpoints
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -396,19 +387,13 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.getAllForVersionApiEndpoints({
-                        apiID: "<value>",
-                        versionID: "<value>",
-                      });
+                      const result = await sdk.apiEndpoints.getAllForVersionApiEndpoints("<value>", "<value>");
 
                       // Handle the result
                       console.log(result)
                     }
 
                     run();
-                - lang: go
-                  label: getAllForVersionApiEndpoints
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/operations\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n    request := operations.GetAllForVersionAPIEndpointsRequest{\n        APIID: \"<value>\",\n        VersionID: \"<value>\",\n    }\n    \n    ctx := context.Background()\n    res, err := s.GetAllForVersionAPIEndpoints(ctx, request)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.APIEndpoints != nil {\n        // handle response\n    }\n}"
     /v1/apis/{apiID}/version/{versionID}/api_endpoints/find/{displayName}:
         get:
             summary: Find an ApiEndpoint via its displayName.
@@ -450,7 +435,7 @@ paths:
                 - lang: typescript
                   label: findApiEndpoint
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -459,20 +444,13 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.findApiEndpoint({
-                        apiID: "<value>",
-                        versionID: "<value>",
-                        displayName: "Don.Strosin",
-                      });
+                      const result = await sdk.apiEndpoints.findApiEndpoint("<value>", "<value>", "<value>");
 
                       // Handle the result
                       console.log(result)
                     }
 
                     run();
-                - lang: go
-                  label: findApiEndpoint
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/operations\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n    request := operations.FindAPIEndpointRequest{\n        APIID: \"<value>\",\n        VersionID: \"<value>\",\n        DisplayName: \"Don.Strosin\",\n    }\n    \n    ctx := context.Background()\n    res, err := s.FindAPIEndpoint(ctx, request)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.APIEndpoint != nil {\n        // handle response\n    }\n}"
     /v1/apis/{apiID}/version/{versionID}/api_endpoints/{apiEndpointID}:
         delete:
             summary: Delete an ApiEndpoint.
@@ -509,7 +487,7 @@ paths:
                 - lang: typescript
                   label: deleteApiEndpoint
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -518,20 +496,13 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.deleteApiEndpoint({
-                        apiID: "<value>",
-                        versionID: "<value>",
-                        apiEndpointID: "<value>",
-                      });
+                      const result = await sdk.apiEndpoints.deleteApiEndpoint("<value>", "<value>", "<value>");
 
                       // Handle the result
                       console.log(result)
                     }
 
                     run();
-                - lang: go
-                  label: deleteApiEndpoint
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/operations\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n    request := operations.DeleteAPIEndpointRequest{\n        APIID: \"<value>\",\n        VersionID: \"<value>\",\n        APIEndpointID: \"<value>\",\n    }\n    \n    ctx := context.Background()\n    res, err := s.DeleteAPIEndpoint(ctx, request)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
         get:
             summary: Get an ApiEndpoint.
             operationId: getApiEndpoint
@@ -569,7 +540,7 @@ paths:
                 - lang: typescript
                   label: getApiEndpoint
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -578,20 +549,13 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.getApiEndpoint({
-                        apiID: "<value>",
-                        versionID: "<value>",
-                        apiEndpointID: "<value>",
-                      });
+                      const result = await sdk.apiEndpoints.getApiEndpoint("<value>", "<value>", "<value>");
 
                       // Handle the result
                       console.log(result)
                     }
 
                     run();
-                - lang: go
-                  label: getApiEndpoint
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/operations\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n    request := operations.GetAPIEndpointRequest{\n        APIID: \"<value>\",\n        VersionID: \"<value>\",\n        APIEndpointID: \"<value>\",\n    }\n    \n    ctx := context.Background()\n    res, err := s.GetAPIEndpoint(ctx, request)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.APIEndpoint != nil {\n        // handle response\n    }\n}"
         put:
             summary: Upsert an ApiEndpoint.
             description: |-
@@ -638,7 +602,7 @@ paths:
                 - lang: typescript
                   label: upsertApiEndpoint
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -647,18 +611,13 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.upsertApiEndpoint({
-                        apiID: "<value>",
-                        versionID: "<value>",
-                        apiEndpointID: "<value>",
-                        apiEndpoint: {
-                          apiEndpointId: "<value>",
-                          description: "Public-key systematic attitude",
-                          displayName: "Camille.Schaefer11",
-                          method: "<value>",
-                          path: "/Library",
-                          versionId: "<value>",
-                        },
+                      const result = await sdk.apiEndpoints.upsertApiEndpoint("<value>", "<value>", "<value>", {
+                        apiEndpointId: "<value>",
+                        description: "Public-key systematic attitude",
+                        displayName: "Camille.Schaefer11",
+                        method: "<value>",
+                        path: "/Library",
+                        versionId: "<value>",
                       });
 
                       // Handle the result
@@ -666,9 +625,6 @@ paths:
                     }
 
                     run();
-                - lang: go
-                  label: upsertApiEndpoint
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/operations\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n    request := operations.UpsertAPIEndpointRequest{\n        APIID: \"<value>\",\n        VersionID: \"<value>\",\n        APIEndpointID: \"<value>\",\n        APIEndpoint: shared.APIEndpointInput{\n            APIEndpointID: \"<value>\",\n            Description: \"Public-key systematic attitude\",\n            DisplayName: \"Camille.Schaefer11\",\n            Method: \"<value>\",\n            Path: \"/Library\",\n            VersionID: \"<value>\",\n        },\n    }\n    \n    ctx := context.Background()\n    res, err := s.UpsertAPIEndpoint(ctx, request)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.APIEndpoint != nil {\n        // handle response\n    }\n}"
     /v1/apis/{apiID}/version/{versionID}/api_endpoints/{apiEndpointID}/generate/openapi:
         get:
             summary: Generate an OpenAPI specification for a particular ApiEndpoint.
@@ -710,7 +666,7 @@ paths:
                 - lang: typescript
                   label: generateOpenApiSpecForApiEndpoint
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -719,20 +675,13 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.generateOpenApiSpecForApiEndpoint({
-                        apiID: "<value>",
-                        versionID: "<value>",
-                        apiEndpointID: "<value>",
-                      });
+                      const result = await sdk.apiEndpoints.generateOpenApiSpecForApiEndpoint("<value>", "<value>", "<value>");
 
                       // Handle the result
                       console.log(result)
                     }
 
                     run();
-                - lang: go
-                  label: generateOpenApiSpecForApiEndpoint
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/operations\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n    request := operations.GenerateOpenAPISpecForAPIEndpointRequest{\n        APIID: \"<value>\",\n        VersionID: \"<value>\",\n        APIEndpointID: \"<value>\",\n    }\n    \n    ctx := context.Background()\n    res, err := s.GenerateOpenAPISpecForAPIEndpoint(ctx, request)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.GenerateOpenAPISpecDiff != nil {\n        // handle response\n    }\n}"
     /v1/apis/{apiID}/version/{versionID}/api_endpoints/{apiEndpointID}/generate/postman:
         get:
             summary: Generate a Postman collection for a particular ApiEndpoint.
@@ -775,7 +724,7 @@ paths:
                 - lang: typescript
                   label: generatePostmanCollectionForApiEndpoint
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -784,20 +733,13 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.generatePostmanCollectionForApiEndpoint({
-                        apiID: "<value>",
-                        versionID: "<value>",
-                        apiEndpointID: "<value>",
-                      });
+                      const result = await sdk.apiEndpoints.generatePostmanCollectionForApiEndpoint("<value>", "<value>", "<value>");
 
                       // Handle the result
                       console.log(result)
                     }
 
                     run();
-                - lang: go
-                  label: generatePostmanCollectionForApiEndpoint
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/operations\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n    request := operations.GeneratePostmanCollectionForAPIEndpointRequest{\n        APIID: \"<value>\",\n        VersionID: \"<value>\",\n        APIEndpointID: \"<value>\",\n    }\n    \n    ctx := context.Background()\n    res, err := s.GeneratePostmanCollectionForAPIEndpoint(ctx, request)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.PostmanCollection != nil {\n        // handle response\n    }\n}"
     /v1/apis/{apiID}/version/{versionID}/generate/openapi:
         get:
             summary: Generate an OpenAPI specification for a particular Api.
@@ -833,7 +775,7 @@ paths:
                 - lang: typescript
                   label: generateOpenApiSpec
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -842,19 +784,13 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.generateOpenApiSpec({
-                        apiID: "<value>",
-                        versionID: "<value>",
-                      });
+                      const result = await sdk.apis.generateOpenApiSpec("<value>", "<value>");
 
                       // Handle the result
                       console.log(result)
                     }
 
                     run();
-                - lang: go
-                  label: generateOpenApiSpec
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/operations\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n    request := operations.GenerateOpenAPISpecRequest{\n        APIID: \"<value>\",\n        VersionID: \"<value>\",\n    }\n    \n    ctx := context.Background()\n    res, err := s.GenerateOpenAPISpec(ctx, request)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.GenerateOpenAPISpecDiff != nil {\n        // handle response\n    }\n}"
     /v1/apis/{apiID}/version/{versionID}/generate/postman:
         get:
             summary: Generate a Postman collection for a particular Api.
@@ -891,7 +827,7 @@ paths:
                 - lang: typescript
                   label: generatePostmanCollection
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -900,19 +836,13 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.generatePostmanCollection({
-                        apiID: "<value>",
-                        versionID: "<value>",
-                      });
+                      const result = await sdk.apis.generatePostmanCollection("<value>", "<value>");
 
                       // Handle the result
                       console.log(result)
                     }
 
                     run();
-                - lang: go
-                  label: generatePostmanCollection
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/operations\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n    request := operations.GeneratePostmanCollectionRequest{\n        APIID: \"<value>\",\n        VersionID: \"<value>\",\n    }\n    \n    ctx := context.Background()\n    res, err := s.GeneratePostmanCollection(ctx, request)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.PostmanCollection != nil {\n        // handle response\n    }\n}"
     /v1/apis/{apiID}/version/{versionID}/metadata:
         get:
             summary: Get all metadata for a particular apiID and versionID.
@@ -948,7 +878,7 @@ paths:
                 - lang: typescript
                   label: getVersionMetadata
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -957,19 +887,13 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.getVersionMetadata({
-                        apiID: "<value>",
-                        versionID: "<value>",
-                      });
+                      const result = await sdk.metadata.getVersionMetadata("<value>", "<value>");
 
                       // Handle the result
                       console.log(result)
                     }
 
                     run();
-                - lang: go
-                  label: getVersionMetadata
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/operations\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n    request := operations.GetVersionMetadataRequest{\n        APIID: \"<value>\",\n        VersionID: \"<value>\",\n    }\n    \n    ctx := context.Background()\n    res, err := s.GetVersionMetadata(ctx, request)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.VersionMetadata != nil {\n        // handle response\n    }\n}"
         post:
             summary: Insert metadata for a particular apiID and versionID.
             operationId: insertVersionMetadata
@@ -1008,7 +932,7 @@ paths:
                 - lang: typescript
                   label: insertVersionMetadata
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -1017,13 +941,9 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.insertVersionMetadata({
-                        apiID: "<value>",
-                        versionID: "<value>",
-                        versionMetadata: {
-                          metaKey: "<value>",
-                          metaValue: "<value>",
-                        },
+                      const result = await sdk.metadata.insertVersionMetadata("<value>", "<value>", {
+                        metaKey: "<value>",
+                        metaValue: "<value>",
                       });
 
                       // Handle the result
@@ -1031,9 +951,6 @@ paths:
                     }
 
                     run();
-                - lang: go
-                  label: insertVersionMetadata
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/operations\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n    request := operations.InsertVersionMetadataRequest{\n        APIID: \"<value>\",\n        VersionID: \"<value>\",\n        VersionMetadata: shared.VersionMetadataInput{\n            MetaKey: \"<value>\",\n            MetaValue: \"<value>\",\n        },\n    }\n    \n    ctx := context.Background()\n    res, err := s.InsertVersionMetadata(ctx, request)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.VersionMetadata != nil {\n        // handle response\n    }\n}"
     /v1/apis/{apiID}/version/{versionID}/metadata/{metaKey}/{metaValue}:
         delete:
             summary: Delete metadata for a particular apiID and versionID.
@@ -1074,7 +991,7 @@ paths:
                 - lang: typescript
                   label: deleteVersionMetadata
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -1083,21 +1000,13 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.deleteVersionMetadata({
-                        apiID: "<value>",
-                        versionID: "<value>",
-                        metaKey: "<value>",
-                        metaValue: "<value>",
-                      });
+                      const result = await sdk.metadata.deleteVersionMetadata("<value>", "<value>", "<value>", "<value>");
 
                       // Handle the result
                       console.log(result)
                     }
 
                     run();
-                - lang: go
-                  label: deleteVersionMetadata
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/operations\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n    request := operations.DeleteVersionMetadataRequest{\n        APIID: \"<value>\",\n        VersionID: \"<value>\",\n        MetaKey: \"<value>\",\n        MetaValue: \"<value>\",\n    }\n    \n    ctx := context.Background()\n    res, err := s.DeleteVersionMetadata(ctx, request)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
     /v1/apis/{apiID}/version/{versionID}/schema:
         get:
             summary: Get information about the latest schema.
@@ -1131,7 +1040,7 @@ paths:
                 - lang: typescript
                   label: getSchema
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -1140,19 +1049,13 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.getSchema({
-                        apiID: "<value>",
-                        versionID: "<value>",
-                      });
+                      const result = await sdk.schemas.getSchema("<value>", "<value>");
 
                       // Handle the result
                       console.log(result)
                     }
 
                     run();
-                - lang: go
-                  label: getSchema
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/operations\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n    request := operations.GetSchemaRequest{\n        APIID: \"<value>\",\n        VersionID: \"<value>\",\n    }\n    \n    ctx := context.Background()\n    res, err := s.GetSchema(ctx, request)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.Schema != nil {\n        // handle response\n    }\n}"
         post:
             summary: Register a schema.
             description: |-
@@ -1196,8 +1099,8 @@ paths:
                 - lang: typescript
                   label: registerSchema
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
                     import { openAsBlob } from "node:fs";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -1206,12 +1109,8 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.registerSchema({
-                        apiID: "<value>",
-                        versionID: "<value>",
-                        requestBody: {
-                          file: await openAsBlob("./sample-file"),
-                        },
+                      const result = await sdk.schemas.registerSchema("<value>", "<value>", {
+                        file: await openAsBlob("./sample-file"),
                       });
 
                       // Handle the result
@@ -1219,9 +1118,6 @@ paths:
                     }
 
                     run();
-                - lang: go
-                  label: registerSchema
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/operations\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n    request := operations.RegisterSchemaRequest{\n        APIID: \"<value>\",\n        VersionID: \"<value>\",\n        RequestBody: operations.RegisterSchemaRequestBody{\n            File: operations.File{\n                FileName: \"katal_gasoline_north.gif\",\n                Content: []byte(\"0x0eD5134749\"),\n            },\n        },\n    }\n    \n    ctx := context.Background()\n    res, err := s.RegisterSchema(ctx, request)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
     /v1/apis/{apiID}/version/{versionID}/schema/download:
         get:
             summary: Download the latest schema for a particular apiID.
@@ -1261,7 +1157,7 @@ paths:
                 - lang: typescript
                   label: downloadSchema
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -1270,19 +1166,13 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.downloadSchema({
-                        apiID: "<value>",
-                        versionID: "<value>",
-                      });
+                      const result = await sdk.schemas.downloadSchema("<value>", "<value>");
 
                       // Handle the result
                       console.log(result)
                     }
 
                     run();
-                - lang: go
-                  label: downloadSchema
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/operations\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n    request := operations.DownloadSchemaRequest{\n        APIID: \"<value>\",\n        VersionID: \"<value>\",\n    }\n    \n    ctx := context.Background()\n    res, err := s.DownloadSchema(ctx, request)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.TwoHundredApplicationJSONSchema != nil {\n        // handle response\n    }\n}"
     /v1/apis/{apiID}/version/{versionID}/schema/{baseRevisionID}/diff/{targetRevisionID}:
         get:
             summary: Get a diff of two schema revisions for an Api.
@@ -1327,7 +1217,7 @@ paths:
                 - lang: typescript
                   label: getSchemaDiff
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -1336,21 +1226,13 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.getSchemaDiff({
-                        apiID: "<value>",
-                        versionID: "<value>",
-                        baseRevisionID: "<value>",
-                        targetRevisionID: "<value>",
-                      });
+                      const result = await sdk.schemas.getSchemaDiff("<value>", "<value>", "<value>", "<value>");
 
                       // Handle the result
                       console.log(result)
                     }
 
                     run();
-                - lang: go
-                  label: getSchemaDiff
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/operations\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n    request := operations.GetSchemaDiffRequest{\n        APIID: \"<value>\",\n        VersionID: \"<value>\",\n        BaseRevisionID: \"<value>\",\n        TargetRevisionID: \"<value>\",\n    }\n    \n    ctx := context.Background()\n    res, err := s.GetSchemaDiff(ctx, request)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.SchemaDiff != nil {\n        // handle response\n    }\n}"
     /v1/apis/{apiID}/version/{versionID}/schema/{revisionID}:
         delete:
             summary: Delete a particular schema revision for an Api.
@@ -1385,7 +1267,7 @@ paths:
                 - lang: typescript
                   label: deleteSchema
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -1394,20 +1276,13 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.deleteSchema({
-                        apiID: "<value>",
-                        versionID: "<value>",
-                        revisionID: "<value>",
-                      });
+                      const result = await sdk.schemas.deleteSchema("<value>", "<value>", "<value>");
 
                       // Handle the result
                       console.log(result)
                     }
 
                     run();
-                - lang: go
-                  label: deleteSchema
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/operations\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n    request := operations.DeleteSchemaRequest{\n        APIID: \"<value>\",\n        VersionID: \"<value>\",\n        RevisionID: \"<value>\",\n    }\n    \n    ctx := context.Background()\n    res, err := s.DeleteSchema(ctx, request)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
         get:
             summary: Get information about a particular schema revision for an Api.
             description: "Returns information about the last uploaded schema for a particular schema revision. \nThis won't include the schema itself, that can be retrieved via the downloadSchema operation."
@@ -1446,7 +1321,7 @@ paths:
                 - lang: typescript
                   label: getSchemaRevision
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -1455,20 +1330,13 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.getSchemaRevision({
-                        apiID: "<value>",
-                        versionID: "<value>",
-                        revisionID: "<value>",
-                      });
+                      const result = await sdk.schemas.getSchemaRevision("<value>", "<value>", "<value>");
 
                       // Handle the result
                       console.log(result)
                     }
 
                     run();
-                - lang: go
-                  label: getSchemaRevision
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/operations\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n    request := operations.GetSchemaRevisionRequest{\n        APIID: \"<value>\",\n        VersionID: \"<value>\",\n        RevisionID: \"<value>\",\n    }\n    \n    ctx := context.Background()\n    res, err := s.GetSchemaRevision(ctx, request)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.Schema != nil {\n        // handle response\n    }\n}"
     /v1/apis/{apiID}/version/{versionID}/schema/{revisionID}/download:
         get:
             summary: Download a particular schema revision for an Api.
@@ -1514,7 +1382,7 @@ paths:
                 - lang: typescript
                   label: downloadSchemaRevision
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -1523,20 +1391,13 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.downloadSchemaRevision({
-                        apiID: "<value>",
-                        versionID: "<value>",
-                        revisionID: "<value>",
-                      });
+                      const result = await sdk.schemas.downloadSchemaRevision("<value>", "<value>", "<value>");
 
                       // Handle the result
                       console.log(result)
                     }
 
                     run();
-                - lang: go
-                  label: downloadSchemaRevision
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/operations\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n    request := operations.DownloadSchemaRevisionRequest{\n        APIID: \"<value>\",\n        VersionID: \"<value>\",\n        RevisionID: \"<value>\",\n    }\n    \n    ctx := context.Background()\n    res, err := s.DownloadSchemaRevision(ctx, request)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.TwoHundredApplicationJSONSchema != nil {\n        // handle response\n    }\n}"
     /v1/apis/{apiID}/version/{versionID}/schemas:
         get:
             summary: Get information about all schemas associated with a particular apiID.
@@ -1572,7 +1433,7 @@ paths:
                 - lang: typescript
                   label: getSchemas
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -1581,19 +1442,13 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.getSchemas({
-                        apiID: "<value>",
-                        versionID: "<value>",
-                      });
+                      const result = await sdk.schemas.getSchemas("<value>", "<value>");
 
                       // Handle the result
                       console.log(result)
                     }
 
                     run();
-                - lang: go
-                  label: getSchemas
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/operations\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n    request := operations.GetSchemasRequest{\n        APIID: \"<value>\",\n        VersionID: \"<value>\",\n    }\n    \n    ctx := context.Background()\n    res, err := s.GetSchemas(ctx, request)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.Schemata != nil {\n        // handle response\n    }\n}"
     /v1/auth/validate:
         get:
             summary: Validate the current api key.
@@ -1613,7 +1468,7 @@ paths:
                 - lang: typescript
                   label: validateApiKey
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -1622,16 +1477,13 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.validateApiKey();
+                      const result = await sdk.auth.validateApiKey();
 
                       // Handle the result
                       console.log(result)
                     }
 
                     run();
-                - lang: go
-                  label: validateApiKey
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n\n    \n    ctx := context.Background()\n    res, err := s.ValidateAPIKey(ctx)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.APIKeyDetails != nil {\n        // handle response\n    }\n}"
     /v1/user:
         get:
             summary: Get information about the current user.
@@ -1651,7 +1503,7 @@ paths:
                 - lang: typescript
                   label: getUser
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -1660,16 +1512,13 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.getUser();
+                      const result = await sdk.auth.getUser();
 
                       // Handle the result
                       console.log(result)
                     }
 
                     run();
-                - lang: go
-                  label: getUser
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n\n    \n    ctx := context.Background()\n    res, err := s.GetUser(ctx)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.User != nil {\n        // handle response\n    }\n}"
     /v1/auth/access_token:
         get:
             summary: Get or refresh an access token for the current workspace.
@@ -1697,21 +1546,18 @@ paths:
                 - lang: typescript
                   label: getAccessToken
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK();
 
                     async function run() {
-                      const result = await sdk.getAccessToken("<value>");
+                      const result = await sdk.auth.getAccessToken("<value>");
 
                       // Handle the result
                       console.log(result)
                     }
 
                     run();
-                - lang: go
-                  label: getAccessToken
-                  source: "package main\n\nimport(\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/operations\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New()\n\n    request := operations.GetAccessTokenRequest{\n        WorkspaceID: \"<value>\",\n    }\n    \n    ctx := context.Background()\n    res, err := s.GetAccessToken(ctx, request)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.AccessToken != nil {\n        // handle response\n    }\n}"
     /v1/eventlog/query:
         get:
             summary: Query the event log to retrieve a list of requests.
@@ -1746,7 +1592,7 @@ paths:
                 - lang: typescript
                   label: queryEventLog
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -1755,7 +1601,7 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.queryEventLog({
+                      const result = await sdk.requests.queryEventLog({
                         filters: [
                           {
                             key: "<key>",
@@ -1773,9 +1619,6 @@ paths:
                     }
 
                     run();
-                - lang: go
-                  label: queryEventLog
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/operations\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n    request := operations.QueryEventLogRequest{}\n    \n    ctx := context.Background()\n    res, err := s.QueryEventLog(ctx, request)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.BoundedRequests != nil {\n        // handle response\n    }\n}"
     /v1/eventlog/{requestID}:
         get:
             summary: Get information about a particular request.
@@ -1802,7 +1645,7 @@ paths:
                 - lang: typescript
                   label: getRequestFromEventLog
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -1811,16 +1654,13 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.getRequestFromEventLog("<value>");
+                      const result = await sdk.requests.getRequestFromEventLog("<value>");
 
                       // Handle the result
                       console.log(result)
                     }
 
                     run();
-                - lang: go
-                  label: getRequestFromEventLog
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/operations\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n    request := operations.GetRequestFromEventLogRequest{\n        RequestID: \"<value>\",\n    }\n    \n    ctx := context.Background()\n    res, err := s.GetRequestFromEventLog(ctx, request)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.UnboundedRequest != nil {\n        // handle response\n    }\n}"
     /v1/eventlog/{requestID}/generate/postman:
         get:
             summary: Generate a Postman collection for a particular request.
@@ -1850,7 +1690,7 @@ paths:
                 - lang: typescript
                   label: generateRequestPostmanCollection
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -1859,16 +1699,13 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.generateRequestPostmanCollection("<value>");
+                      const result = await sdk.requests.generateRequestPostmanCollection("<value>");
 
                       // Handle the result
                       console.log(result)
                     }
 
                     run();
-                - lang: go
-                  label: generateRequestPostmanCollection
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/operations\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n    request := operations.GenerateRequestPostmanCollectionRequest{\n        RequestID: \"<value>\",\n    }\n    \n    ctx := context.Background()\n    res, err := s.GenerateRequestPostmanCollection(ctx, request)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.PostmanCollection != nil {\n        // handle response\n    }\n}"
     /v1/github/check_access:
         get:
             operationId: githubCheckAccess
@@ -1894,7 +1731,7 @@ paths:
                 - lang: typescript
                   label: githubCheckAccess
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -1903,19 +1740,13 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.githubCheckAccess({
-                        org: "<value>",
-                        repo: "<value>",
-                      });
+                      const result = await sdk.github.githubCheckAccess("<value>", "<value>");
 
                       // Handle the result
                       console.log(result)
                     }
 
                     run();
-                - lang: go
-                  label: githubCheckAccess
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/operations\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n    request := operations.GithubCheckAccessRequest{\n        Org: \"<value>\",\n        Repo: \"<value>\",\n    }\n    \n    ctx := context.Background()\n    res, err := s.GithubCheckAccess(ctx, request)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
     /v1/github/configure_target:
         post:
             operationId: githubConfigureTarget
@@ -1936,7 +1767,7 @@ paths:
                 - lang: typescript
                   label: githubConfigureTarget
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -1945,7 +1776,7 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.githubConfigureTarget({
+                      const result = await sdk.github.githubConfigureTarget({
                         org: "<value>",
                         repoName: "<value>",
                       });
@@ -1955,9 +1786,6 @@ paths:
                     }
 
                     run();
-                - lang: go
-                  label: githubConfigureTarget
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n    request := shared.GithubConfigureTargetRequest{\n        Org: \"<value>\",\n        RepoName: \"<value>\",\n    }\n    \n    ctx := context.Background()\n    res, err := s.GithubConfigureTarget(ctx, request)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
     /v1/github/trigger_action:
         post:
             operationId: githubTriggerAction
@@ -1978,7 +1806,7 @@ paths:
                 - lang: typescript
                   label: githubTriggerAction
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -1987,7 +1815,7 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.githubTriggerAction({
+                      const result = await sdk.github.githubTriggerAction({
                         org: "<value>",
                         repoName: "<value>",
                         genLockId: "<value>",
@@ -1998,9 +1826,6 @@ paths:
                     }
 
                     run();
-                - lang: go
-                  label: githubTriggerAction
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n    request := shared.GithubTriggerActionRequest{\n        Org: \"<value>\",\n        RepoName: \"<value>\",\n        GenLockID: \"<value>\",\n    }\n    \n    ctx := context.Background()\n    res, err := s.GithubTriggerAction(ctx, request)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
     /v1/organization:
         get:
             summary: Get organizations for a user
@@ -2025,7 +1850,7 @@ paths:
                 - lang: typescript
                   label: getOrganizations
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -2034,16 +1859,46 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.getOrganizations();
+                      const result = await sdk.organizations.getOrganizations();
 
                       // Handle the result
                       console.log(result)
                     }
 
                     run();
-                - lang: go
-                  label: getOrganizations
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n\n    \n    ctx := context.Background()\n    res, err := s.GetOrganizations(ctx)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.Organizations != nil {\n        // handle response\n    }\n}"
+    /v1/organization/free_trial:
+        post:
+            summary: Create a free trial for an organization
+            description: |-
+                Creates a free trial for an organization
+            operationId: createFreeTrial
+            responses:
+                "200":
+                    description: OK
+                default:
+                    $ref: "#/components/responses/default"
+            tags:
+                - Organizations
+            x-codeSamples:
+                - lang: typescript
+                  label: createFreeTrial
+                  source: |-
+                    import { SDK } from "petstore";
+
+                    const sdk = new SDK({
+                      security: {
+                        apiKey: "<YOUR_API_KEY_HERE>",
+                      },
+                    });
+
+                    async function run() {
+                      const result = await sdk.organizations.createFreeTrial();
+
+                      // Handle the result
+                      console.log(result)
+                    }
+
+                    run();
     /v1/organization/usage:
         get:
             summary: Get billing usage summary for a particular organization
@@ -2065,7 +1920,7 @@ paths:
                 - lang: typescript
                   label: getOrganizationUsage
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -2074,16 +1929,13 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.getOrganizationUsage();
+                      const result = await sdk.organizations.getOrganizationUsage();
 
                       // Handle the result
                       console.log(result)
                     }
 
                     run();
-                - lang: go
-                  label: getOrganizationUsage
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n\n    \n    ctx := context.Background()\n    res, err := s.GetOrganizationUsage(ctx)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.OrganizationUsageResponse != nil {\n        // handle response\n    }\n}"
     /v1/workspace/embed-access-token:
         get:
             summary: Get an embed access token for the current workspace.
@@ -2127,7 +1979,7 @@ paths:
                 - lang: typescript
                   label: getEmbedAccessToken
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -2136,16 +1988,24 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.getEmbedAccessToken({});
+                      const result = await sdk.embeds.getEmbedAccessToken("<value>", 964408, {
+                        filters: [
+                          {
+                            key: "<key>",
+                            operator: "<value>",
+                            value: "<value>",
+                          },
+                        ],
+                        limit: 95617,
+                        offset: 577742,
+                        operator: "<value>",
+                      });
 
                       // Handle the result
                       console.log(result)
                     }
 
                     run();
-                - lang: go
-                  label: getEmbedAccessToken
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/operations\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n    request := operations.GetEmbedAccessTokenRequest{}\n    \n    ctx := context.Background()\n    res, err := s.GetEmbedAccessToken(ctx, request)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.EmbedAccessTokenResponse != nil {\n        // handle response\n    }\n}"
     /v1/workspace/embed-access-tokens/valid:
         get:
             summary: Get all valid embed access tokens for the current workspace.
@@ -2168,7 +2028,7 @@ paths:
                 - lang: typescript
                   label: getValidEmbedAccessTokens
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -2177,16 +2037,13 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.getValidEmbedAccessTokens();
+                      const result = await sdk.embeds.getValidEmbedAccessTokens();
 
                       // Handle the result
                       console.log(result)
                     }
 
                     run();
-                - lang: go
-                  label: getValidEmbedAccessTokens
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n\n    \n    ctx := context.Background()\n    res, err := s.GetValidEmbedAccessTokens(ctx)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.EmbedTokens != nil {\n        // handle response\n    }\n}"
     /v1/workspace/embed-access-tokens/{tokenID}:
         delete:
             summary: Revoke an embed access EmbedToken.
@@ -2209,7 +2066,7 @@ paths:
                 - lang: typescript
                   label: revokeEmbedAccessToken
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -2218,16 +2075,13 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.revokeEmbedAccessToken("<value>");
+                      const result = await sdk.embeds.revokeEmbedAccessToken("<value>");
 
                       // Handle the result
                       console.log(result)
                     }
 
                     run();
-                - lang: go
-                  label: revokeEmbedAccessToken
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/operations\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n    request := operations.RevokeEmbedAccessTokenRequest{\n        TokenID: \"<value>\",\n    }\n    \n    ctx := context.Background()\n    res, err := s.RevokeEmbedAccessToken(ctx, request)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
     /v1/workspace/{workspaceID}/events:
         parameters:
             - name: workspaceID
@@ -2258,6 +2112,18 @@ paths:
                   description: Unique identifier of the openapi diff report digest.
                   schema:
                     type: string
+                - name: interaction_type
+                  in: query
+                  required: false
+                  description: Specified interaction type for events.
+                  schema:
+                    $ref: "#/components/schemas/InteractionType"
+                - name: generate_gen_lock_id
+                  in: query
+                  required: false
+                  description: A specific gen lock ID for the events.
+                  schema:
+                    type: string
             tags:
                 - Events
             responses:
@@ -2277,7 +2143,7 @@ paths:
                 - lang: typescript
                   label: searchWorkspaceEvents
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -2286,16 +2152,13 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.searchWorkspaceEvents({});
+                      const result = await sdk.events.searchWorkspaceEvents({});
 
                       // Handle the result
                       console.log(result)
                     }
 
                     run();
-                - lang: go
-                  label: searchWorkspaceEvents
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/operations\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n    request := operations.SearchWorkspaceEventsRequest{}\n    \n    ctx := context.Background()\n    res, err := s.SearchWorkspaceEvents(ctx, request)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.CliEventBatch != nil {\n        // handle response\n    }\n}"
         post:
             summary: Post events for a specific workspace
             description: Sends an array of events to be stored for a particular workspace.
@@ -2306,7 +2169,7 @@ paths:
                 backoff:
                     initialInterval: 100 # 100 milliseconds
                     maxInterval: 2000 # 2 seconds
-                    maxElapsedTime: 30000 # 30 seconds
+                    maxElapsedTime: 60000 # 60 seconds
                     exponent: 1.5
                 statusCodes:
                     - 408
@@ -2335,8 +2198,8 @@ paths:
                 - lang: typescript
                   label: postWorkspaceEvents
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
-                    import { InteractionType } from "@speakeasy-api/sdk/models/components";
+                    import { SDK } from "petstore";
+                    import { InteractionType } from "petstore/models/components";
 
                     const sdk = new SDK({
                       security: {
@@ -2345,30 +2208,25 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.postWorkspaceEvents({
-                        requestBody: [
-                          {
-                            id: "<id>",
-                            executionId: "<value>",
-                            workspaceId: "<value>",
-                            speakeasyApiKeyName: "<value>",
-                            interactionType: InteractionType.Publish,
-                            localStartedAt: new Date("2022-05-18T11:28:11.328Z"),
-                            createdAt: new Date("2024-05-07T12:35:47.182Z"),
-                            speakeasyVersion: "<value>",
-                            success: false,
-                          },
-                        ],
-                      });
+                      const result = await sdk.events.postWorkspaceEvents([
+                        {
+                          id: "<id>",
+                          executionId: "<value>",
+                          workspaceId: "<value>",
+                          speakeasyApiKeyName: "<value>",
+                          interactionType: InteractionType.Publish,
+                          localStartedAt: new Date("2022-05-18T11:28:11.328Z"),
+                          createdAt: new Date("2024-05-07T12:35:47.182Z"),
+                          speakeasyVersion: "<value>",
+                          success: false,
+                        },
+                      ], "<value>");
 
                       // Handle the result
                       console.log(result)
                     }
 
                     run();
-                - lang: go
-                  label: postWorkspaceEvents
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/types\"\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/operations\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n    request := operations.PostWorkspaceEventsRequest{\n        RequestBody: []shared.CliEvent{\n            shared.CliEvent{\n                ID: \"<id>\",\n                ExecutionID: \"<value>\",\n                WorkspaceID: \"<value>\",\n                SpeakeasyAPIKeyName: \"<value>\",\n                InteractionType: shared.InteractionTypePublish,\n                LocalStartedAt: types.MustTimeFromString(\"2022-05-18T11:28:11.328Z\"),\n                CreatedAt: types.MustTimeFromString(\"2024-05-07T12:35:47.182Z\"),\n                SpeakeasyVersion: \"<value>\",\n                Success: false,\n            },\n        },\n    }\n    \n    ctx := context.Background()\n    res, err := s.PostWorkspaceEvents(ctx, request)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
     /v1/workspace/{workspaceID}/events/targets/{targetID}/events:
         get:
             description: Load recent events for a particular workspace
@@ -2412,7 +2270,7 @@ paths:
                 - lang: typescript
                   label: getWorkspaceEventsByTarget
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -2421,18 +2279,13 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.getWorkspaceEventsByTarget({
-                        targetID: "<value>",
-                      });
+                      const result = await sdk.events.getWorkspaceEventsByTarget("<value>", "<value>", new Date("2024-04-01T04:00:29.393Z"));
 
                       // Handle the result
                       console.log(result)
                     }
 
                     run();
-                - lang: go
-                  label: getWorkspaceEventsByTarget
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/operations\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n    request := operations.GetWorkspaceEventsByTargetRequest{\n        TargetID: \"<value>\",\n    }\n    \n    ctx := context.Background()\n    res, err := s.GetWorkspaceEventsByTarget(ctx, request)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.CliEventBatch != nil {\n        // handle response\n    }\n}"
     /v1/workspace/access:
         get:
             summary: Get access allowances for a particular workspace
@@ -2443,7 +2296,7 @@ paths:
                 backoff:
                     initialInterval: 100 # 100 milliseconds
                     maxInterval: 2000 # 2 seconds
-                    maxElapsedTime: 30000 # 30 seconds
+                    maxElapsedTime: 60000 # 60 seconds
                     exponent: 1.5
                 statusCodes:
                     - 408
@@ -2480,7 +2333,7 @@ paths:
                 - lang: typescript
                   label: getWorkspaceAccess
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -2489,16 +2342,13 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.getWorkspaceAccess({});
+                      const result = await sdk.auth.getWorkspaceAccess("<value>", "<value>", false);
 
                       // Handle the result
                       console.log(result)
                     }
 
                     run();
-                - lang: go
-                  label: getWorkspaceAccess
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/operations\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n    request := operations.GetWorkspaceAccessRequest{}\n    \n    ctx := context.Background()\n    res, err := s.GetWorkspaceAccess(ctx, request)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.AccessDetails != nil {\n        // handle response\n    }\n}"
     /v1/workspace/{workspaceID}/events/targets:
         parameters:
             - name: workspaceID
@@ -2536,7 +2386,7 @@ paths:
                 - lang: typescript
                   label: getWorkspaceTargets
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -2545,16 +2395,13 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.getWorkspaceTargets({});
+                      const result = await sdk.events.getWorkspaceTargets("<value>", new Date("2024-11-24T17:59:46.647Z"));
 
                       // Handle the result
                       console.log(result)
                     }
 
                     run();
-                - lang: go
-                  label: getWorkspaceTargets
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/operations\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n    request := operations.GetWorkspaceTargetsRequest{}\n    \n    ctx := context.Background()\n    res, err := s.GetWorkspaceTargets(ctx, request)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.TargetSDKList != nil {\n        // handle response\n    }\n}"
     /v1/artifacts/preflight:
         post:
             summary: Get access token for communicating with OCI distribution endpoints
@@ -2576,7 +2423,7 @@ paths:
                 - lang: typescript
                   label: preflight
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -2585,7 +2432,7 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.preflight({
+                      const result = await sdk.artifacts.preflight({
                         namespaceName: "<value>",
                       });
 
@@ -2594,9 +2441,6 @@ paths:
                     }
 
                     run();
-                - lang: go
-                  label: preflight
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n    var request *shared.PreflightRequest = &shared.PreflightRequest{\n        NamespaceName: \"<value>\",\n    }\n    \n    ctx := context.Background()\n    res, err := s.Preflight(ctx, request)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.PreflightToken != nil {\n        // handle response\n    }\n}"
     /v1/artifacts/namespaces:
         get:
             summary: Each namespace contains many revisions.
@@ -2616,7 +2460,7 @@ paths:
                 - lang: typescript
                   label: getNamespaces
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -2625,16 +2469,13 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.getNamespaces();
+                      const result = await sdk.artifacts.getNamespaces();
 
                       // Handle the result
                       console.log(result)
                     }
 
                     run();
-                - lang: go
-                  label: getNamespaces
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n\n    \n    ctx := context.Background()\n    res, err := s.GetNamespaces(ctx)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.GetNamespacesResponse != nil {\n        // handle response\n    }\n}"
     /v1/artifacts/namespaces/{namespace_name}/revisions:
         get:
             operationId: getRevisions
@@ -2664,7 +2505,7 @@ paths:
                 - lang: typescript
                   label: getRevisions
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -2673,18 +2514,13 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.getRevisions({
-                        namespaceName: "<value>",
-                      });
+                      const result = await sdk.artifacts.getRevisions("<value>", "<value>");
 
                       // Handle the result
                       console.log(result)
                     }
 
                     run();
-                - lang: go
-                  label: getRevisions
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/operations\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n    request := operations.GetRevisionsRequest{\n        NamespaceName: \"<value>\",\n    }\n    \n    ctx := context.Background()\n    res, err := s.GetRevisions(ctx, request)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.GetRevisionsResponse != nil {\n        // handle response\n    }\n}"
     /v1/artifacts/namespaces/{namespace_name}/tags:
         get:
             operationId: getTags
@@ -2709,7 +2545,7 @@ paths:
                 - lang: typescript
                   label: getTags
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -2718,16 +2554,13 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.getTags("<value>");
+                      const result = await sdk.artifacts.getTags("<value>");
 
                       // Handle the result
                       console.log(result)
                     }
 
                     run();
-                - lang: go
-                  label: getTags
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/operations\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n    request := operations.GetTagsRequest{\n        NamespaceName: \"<value>\",\n    }\n    \n    ctx := context.Background()\n    res, err := s.GetTags(ctx, request)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.GetTagsResponse != nil {\n        // handle response\n    }\n}"
         post:
             summary: Add tags to an existing revision
             operationId: postTags
@@ -2754,7 +2587,7 @@ paths:
                 - lang: typescript
                   label: postTags
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -2763,8 +2596,11 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.postTags({
-                        namespaceName: "<value>",
+                      const result = await sdk.artifacts.postTags("<value>", {
+                        revisionDigest: "<value>",
+                        tags: [
+                          "<value>",
+                        ],
                       });
 
                       // Handle the result
@@ -2772,9 +2608,6 @@ paths:
                     }
 
                     run();
-                - lang: go
-                  label: postTags
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/operations\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n    request := operations.PostTagsRequest{\n        NamespaceName: \"<value>\",\n    }\n    \n    ctx := context.Background()\n    res, err := s.PostTags(ctx, request)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
     /v1/oci/v2/{organization_slug}/{workspace_slug}/{namespace_name}/manifests/{revision_reference}:
         get:
             summary: Get manifest for a particular reference
@@ -2821,7 +2654,7 @@ paths:
                 - lang: typescript
                   label: getManifest
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -2830,21 +2663,13 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.getManifest({
-                        organizationSlug: "<value>",
-                        workspaceSlug: "<value>",
-                        namespaceName: "<value>",
-                        revisionReference: "<value>",
-                      });
+                      const result = await sdk.artifacts.getManifest("<value>", "<value>", "<value>", "<value>");
 
                       // Handle the result
                       console.log(result)
                     }
 
                     run();
-                - lang: go
-                  label: getManifest
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/operations\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n    request := operations.GetManifestRequest{\n        OrganizationSlug: \"<value>\",\n        WorkspaceSlug: \"<value>\",\n        NamespaceName: \"<value>\",\n        RevisionReference: \"<value>\",\n    }\n    \n    ctx := context.Background()\n    res, err := s.GetManifest(ctx, request)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.Manifest != nil {\n        // handle response\n    }\n}"
     /v1/oci/v2/{organization_slug}/{workspace_slug}/{namespace_name}/blobs/{digest}:
         get:
             summary: Get blob for a particular digest
@@ -2887,7 +2712,7 @@ paths:
                 - lang: typescript
                   label: getBlob
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -2896,21 +2721,13 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.getBlob({
-                        organizationSlug: "<value>",
-                        workspaceSlug: "<value>",
-                        namespaceName: "<value>",
-                        digest: "<value>",
-                      });
+                      const result = await sdk.artifacts.getBlob("<value>", "<value>", "<value>", "<value>");
 
                       // Handle the result
                       console.log(result)
                     }
 
                     run();
-                - lang: go
-                  label: getBlob
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/operations\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n    request := operations.GetBlobRequest{\n        OrganizationSlug: \"<value>\",\n        WorkspaceSlug: \"<value>\",\n        NamespaceName: \"<value>\",\n        Digest: \"<value>\",\n    }\n    \n    ctx := context.Background()\n    res, err := s.GetBlob(ctx, request)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.Blob != nil {\n        // handle response\n    }\n}"
     /v1/reports:
         post:
             summary: Upload a report.
@@ -2950,8 +2767,8 @@ paths:
                 - lang: typescript
                   label: uploadReport
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
                     import { openAsBlob } from "node:fs";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -2960,7 +2777,7 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.uploadReport({
+                      const result = await sdk.reports.uploadReport({
                         data: {},
                         file: await openAsBlob("./sample-file"),
                       });
@@ -2970,9 +2787,6 @@ paths:
                     }
 
                     run();
-                - lang: go
-                  label: uploadReport
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/operations\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n    request := operations.UploadReportRequestBody{\n        Data: shared.Report{},\n        File: operations.UploadReportFile{\n            FileName: \"isadore_sas_contingency.wav\",\n            Content: []byte(\"0x4E3FEAa5AF\"),\n        },\n    }\n    \n    ctx := context.Background()\n    res, err := s.UploadReport(ctx, request)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.UploadedReport != nil {\n        // handle response\n    }\n}"
     /v1/reports/linting/{documentChecksum}:
         get:
             summary: Get the signed access url for the linting reports for a particular document.
@@ -3003,7 +2817,7 @@ paths:
                 - lang: typescript
                   label: getLintingReportSignedUrl
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -3012,16 +2826,13 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.getLintingReportSignedUrl("<value>");
+                      const result = await sdk.reports.getLintingReportSignedUrl("<value>");
 
                       // Handle the result
                       console.log(result)
                     }
 
                     run();
-                - lang: go
-                  label: getLintingReportSignedUrl
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/operations\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n    request := operations.GetLintingReportSignedURLRequest{\n        DocumentChecksum: \"<value>\",\n    }\n    \n    ctx := context.Background()\n    res, err := s.GetLintingReportSignedURL(ctx, request)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.SignedAccess != nil {\n        // handle response\n    }\n}"
     /v1/reports/changes/{documentChecksum}:
         get:
             summary: Get the signed access url for the change reports for a particular document.
@@ -3052,7 +2863,7 @@ paths:
                 - lang: typescript
                   label: getChangesReportSignedUrl
                   source: |-
-                    import { SDK } from "@speakeasy-api/sdk";
+                    import { SDK } from "petstore";
 
                     const sdk = new SDK({
                       security: {
@@ -3061,16 +2872,88 @@ paths:
                     });
 
                     async function run() {
-                      const result = await sdk.getChangesReportSignedUrl("<value>");
+                      const result = await sdk.reports.getChangesReportSignedUrl("<value>");
 
                       // Handle the result
                       console.log(result)
                     }
 
                     run();
-                - lang: go
-                  label: getChangesReportSignedUrl
-                  source: "package main\n\nimport(\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/shared\"\n\tgeneratedsdk \"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk\"\n\t\"github.com/speakeasy-api/speakeasy-registry/internal/generated-sdk/pkg/models/operations\"\n\t\"context\"\n\t\"log\"\n)\n\nfunc main() {\n    s := generatedsdk.New(\n        generatedsdk.WithSecurity(shared.Security{\n            APIKey: generatedsdk.String(\"<YOUR_API_KEY_HERE>\"),\n        }),\n    )\n\n    request := operations.GetChangesReportSignedURLRequest{\n        DocumentChecksum: \"<value>\",\n    }\n    \n    ctx := context.Background()\n    res, err := s.GetChangesReportSignedURL(ctx, request)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.SignedAccess != nil {\n        // handle response\n    }\n}"
+    /v1/suggest/operation_ids:
+        post:
+            summary: Generate operation ID suggestions.
+            description: |-
+                Get suggestions from an LLM model for improving the operationIDs in the provided schema.
+            operationId: suggestOperationIDs
+            requestBody:
+                description: The schema file to upload provided as a multipart/form-data file segment.
+                content:
+                    multipart/form-data:
+                        schema:
+                            properties:
+                                opts:
+                                    type: object
+                                    properties:
+                                        style:
+                                            type: string
+                                            enum:
+                                                - standardize
+                                                - resource
+                                        depth_style:
+                                            type: string
+                                            enum:
+                                                - original
+                                                - flat
+                                                - nested
+                                                - deep
+                                schema:
+                                    format: binary
+                                    type: string
+                            required:
+                                - schema
+                            type: object
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                title: suggestion
+                                properties:
+                                    operation_ids:
+                                        additionalProperties:
+                                            type: array
+                                            items:
+                                                type: string
+                                required:
+                                    - operation_ids
+            tags:
+                - Suggest
+            x-codeSamples:
+                - lang: typescript
+                  label: suggestOperationIDs
+                  source: |-
+                    import { openAsBlob } from "node:fs";
+                    import { SDK } from "petstore";
+
+                    const sdk = new SDK({
+                      security: {
+                        apiKey: "<YOUR_API_KEY_HERE>",
+                      },
+                    });
+
+                    async function run() {
+                      const result = await sdk.suggest.suggestOperationIDs({
+                        schema: await openAsBlob("./sample-file"),
+                      });
+
+                      // Handle the result
+                      console.log(result)
+                    }
+
+                    run();
 components:
     requestBodies:
         PreflightRequest:
@@ -3328,18 +3211,21 @@ components:
                 enabled_features:
                     type: array
                     items:
-                        $ref: "#/components/schemas/FeatureFlag"
+                        type: string
                 feature_flags:
                     deprecated: true
                     type: array
                     items:
                         type: string
+                telemetry_disabled:
+                    type: boolean
             required:
                 - workspace_id
                 - account_type
                 - enabled_features
                 - workspace_slug
                 - org_slug
+                - telemetry_disabled
         AccessDetails:
             type: object
             properties:
@@ -3786,6 +3672,8 @@ components:
                         - free
                         - scale-up
                         - enterprise
+                telemetry_disabled:
+                    type: boolean
                 created_at:
                     type: string
                     format: date-time
@@ -3796,6 +3684,7 @@ components:
                 - id
                 - name
                 - account_type
+                - telemetry_disabled
             type: object
         OrganizationUsageResponse:
             description: A billing summary of organization usage
