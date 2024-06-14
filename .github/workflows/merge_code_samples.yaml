@@ -1,4 +1,4 @@
-name: Merge code samples into spec
+name: Merge Code Samples Into OpenAPI Spec
 permissions:
     checks: write
     contents: write
