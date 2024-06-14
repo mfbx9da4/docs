@@ -1,0 +1,9 @@
+workflowVersion: ""
+sources:
+    merge-code-samples-into-spec:
+        inputs:
+            - location: registry.speakeasyapi.dev/speakeasy-self/speakeasy-self/openapi
+        overlays:
+            - location: registry.speakeasyapi.dev/speakeasy-self/speakeasy-self/code-samples-first-target
+        output: /openapi.yaml
+targets: {}
