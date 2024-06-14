@@ -1,4 +1,4 @@
-workflowVersion: ""
+workflowVersion: 1.0.0
 sources:
     merge-code-samples-into-spec:
         inputs:
