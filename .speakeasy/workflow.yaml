@@ -5,5 +5,5 @@ sources:
             - location: registry.speakeasyapi.dev/speakeasy-self/speakeasy-self/openapi
         overlays:
             - location: registry.speakeasyapi.dev/speakeasy-self/speakeasy-self/code-samples-first-target
-        output: /openapi.yaml
+        output: ./openapi.yaml
 targets: {}
