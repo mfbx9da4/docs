@@ -1,0 +1,23 @@
+speakeasyVersion: 1.322.1
+sources:
+    merge-code-samples-into-spec:
+        sourceNamespace: merge-code-samples-into-spec
+        sourceRevisionDigest: sha256:7e30f3d318c0f424000302b7f33114c36b24185d4b583f0960843a3bd7ea1577
+        sourceBlobDigest: sha256:709dce889dc100cf58ec85943af70ee44482564fae4afabf0786f11eb28ec862
+        tags:
+            - latest
+            - main
+targets: {}
+workflow:
+    workflowVersion: 1.0.0
+    speakeasyVersion: latest
+    sources:
+        merge-code-samples-into-spec:
+            inputs:
+                - location: registry.speakeasyapi.dev/speakeasy-self/speakeasy-self/openapi
+            overlays:
+                - location: registry.speakeasyapi.dev/speakeasy-self/speakeasy-self/code-samples-first-target:main
+            output: ./openapi.yaml
+            registry:
+                location: registry.speakeasyapi.dev/speakeasy-self/speakeasy-self/merge-code-samples-into-spec
+    targets: {}
